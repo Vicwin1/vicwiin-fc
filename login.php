@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+require __DIR__ . '/session.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
@@ -16,27 +16,32 @@ $email = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = strtolower(trim((string) ($_POST['email'] ?? '')));
-    $password = (string) ($_POST['password'] ?? '');
-    $csrfToken = (string) ($_POST['csrf_token'] ?? '');
+    $postedEmail = $_POST['email'] ?? '';
+    $postedPassword = $_POST['password'] ?? '';
+    $postedCsrfToken = $_POST['csrf_token'] ?? '';
+    $email = is_string($postedEmail) ? strtolower(trim($postedEmail)) : '';
+    $password = is_string($postedPassword) ? $postedPassword : '';
+    $csrfToken = is_string($postedCsrfToken) ? $postedCsrfToken : '';
 
-    if (!hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+    if (!isset($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])
+        || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
         $error = 'Your form session expired. Please try again.';
-    } elseif ($email === '' || $password === '') {
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150 || $password === '') {
         $error = 'Enter your email address and password.';
     } else {
         try {
             require __DIR__ . '/config.php';
             $statement = $pdo->prepare(
-                'SELECT id, full_name, password_hash FROM users WHERE email = :email'
+                'SELECT id, full_name, email, password FROM users WHERE email = :email'
             );
             $statement->execute(['email' => $email]);
             $user = $statement->fetch();
 
-            if ($user && password_verify($password, $user['password_hash'])) {
+            if ($user && password_verify($password, $user['password'])) {
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = (int) $user['id'];
                 $_SESSION['user_name'] = $user['full_name'];
+                $_SESSION['user_email'] = $user['email'];
                 $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
                 header('Location: dashboard.php');

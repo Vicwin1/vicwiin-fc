@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $databaseHost = getenv('DB_HOST') ?: 'localhost';
-$databaseName = getenv('DB_NAME') ?: 'auth_system';
+$databaseName = getenv('DB_NAME') ?: 'user_auth_db';
 $databaseUser = getenv('DB_USER') ?: 'root';
 $databasePassword = getenv('DB_PASS') ?: '';
 

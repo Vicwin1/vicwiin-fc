@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+require __DIR__ . '/session.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
@@ -17,13 +17,19 @@ $email = '';
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fullName = trim((string) ($_POST['full_name'] ?? ''));
-    $email = strtolower(trim((string) ($_POST['email'] ?? '')));
-    $password = (string) ($_POST['password'] ?? '');
-    $confirmPassword = (string) ($_POST['confirm_password'] ?? '');
-    $csrfToken = (string) ($_POST['csrf_token'] ?? '');
+    $postedName = $_POST['full_name'] ?? '';
+    $postedEmail = $_POST['email'] ?? '';
+    $postedPassword = $_POST['password'] ?? '';
+    $postedConfirmation = $_POST['confirm_password'] ?? '';
+    $postedCsrfToken = $_POST['csrf_token'] ?? '';
+    $fullName = is_string($postedName) ? trim($postedName) : '';
+    $email = is_string($postedEmail) ? strtolower(trim($postedEmail)) : '';
+    $password = is_string($postedPassword) ? $postedPassword : '';
+    $confirmPassword = is_string($postedConfirmation) ? $postedConfirmation : '';
+    $csrfToken = is_string($postedCsrfToken) ? $postedCsrfToken : '';
 
-    if (!hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+    if (!isset($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])
+        || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
         $errors[] = 'Your form session expired. Please try again.';
     }
 
@@ -31,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Enter a name that is no more than 100 characters.';
     }
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 254) {
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150) {
         $errors[] = 'Enter a valid email address.';
     }
 
@@ -48,12 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             require __DIR__ . '/config.php';
 
             $statement = $pdo->prepare(
-                'INSERT INTO users (full_name, email, password_hash) VALUES (:full_name, :email, :password_hash)'
+                'INSERT INTO users (full_name, email, password) VALUES (:full_name, :email, :password)'
             );
             $statement->execute([
                 'full_name' => $fullName,
                 'email' => $email,
-                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                'password' => password_hash($password, PASSWORD_DEFAULT),
             ]);
 
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -110,7 +116,7 @@ function escape(string $value): string
 
         <label for="email">Email address</label>
         <input id="email" name="email" type="email" autocomplete="email"
-               maxlength="254" value="<?= escape($email) ?>" required>
+               maxlength="150" value="<?= escape($email) ?>" required>
 
         <label for="password">Password</label>
         <input id="password" name="password" type="password" autocomplete="new-password"

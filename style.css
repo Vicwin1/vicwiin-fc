@@ -132,3 +132,137 @@ a {
         padding: 26px 20px;
     }
 }
+
+.dashboard {
+    width: 100%;
+    min-height: 100vh;
+    background: #f3f5f9;
+}
+
+body.dashboard-body {
+    display: block;
+    padding: 0;
+}
+
+.dashboard-header {
+    min-height: 70px;
+    padding: 0 clamp(20px, 6vw, 88px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #fff;
+    border-bottom: 1px solid #e3e7ef;
+}
+
+.brand {
+    color: #172033;
+    font-size: 1.05rem;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+.dashboard-nav {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.dashboard-nav form {
+    display: block;
+}
+
+.nav-link {
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    color: #5e687b;
+    text-decoration: none;
+}
+
+.nav-link.active {
+    color: #3659d9;
+    border-bottom: 2px solid #3659d9;
+}
+
+.nav-logout {
+    min-height: 38px;
+    margin: 0;
+    padding: 8px 14px;
+}
+
+.dashboard-main {
+    width: min(100% - 40px, 880px);
+    margin: 54px auto;
+}
+
+.welcome-panel {
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    margin: 0 0 10px;
+    color: #3659d9;
+    font-size: 0.78rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+}
+
+.welcome-panel h1 {
+    font-size: clamp(1.8rem, 4vw, 2.3rem);
+}
+
+.account-panel {
+    padding: 28px;
+    background: #fff;
+    border: 1px solid #e3e7ef;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgb(23 32 51 / 5%);
+}
+
+.account-panel h2 {
+    margin: 0 0 22px;
+    font-size: 1.15rem;
+}
+
+.account-details {
+    margin: 0;
+}
+
+.account-details div + div {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #edf0f5;
+}
+
+.account-details dt {
+    margin-bottom: 6px;
+    color: #5e687b;
+    font-size: 0.88rem;
+}
+
+.account-details dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .dashboard-header {
+        padding: 0 16px;
+    }
+
+    .dashboard-nav {
+        gap: 14px;
+    }
+
+    .dashboard-main {
+        width: min(100% - 32px, 880px);
+        margin-top: 36px;
+    }
+
+    .account-panel {
+        padding: 22px;
+    }
+}
