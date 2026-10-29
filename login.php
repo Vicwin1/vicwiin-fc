@@ -86,7 +86,7 @@ function escape(string $value): string
 
         <label for="email">Email address</label>
         <input id="email" name="email" type="email" autocomplete="email"
-               value="<?= escape($email) ?>" required>
+               maxlength="150" value="<?= escape($email) ?>" required>
 
         <label for="password">Password</label>
         <input id="password" name="password" type="password" autocomplete="current-password" required>
