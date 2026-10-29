@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Enter your email address and password.';
     } else {
         try {
-            require __DIR__ . '/db.php';
+            require __DIR__ . '/config.php';
             $statement = $pdo->prepare(
                 'SELECT id, full_name, password_hash FROM users WHERE email = :email'
             );

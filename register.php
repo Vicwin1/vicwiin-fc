@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($errors === []) {
         try {
-            require __DIR__ . '/db.php';
+            require __DIR__ . '/config.php';
 
             $statement = $pdo->prepare(
                 'INSERT INTO users (full_name, email, password_hash) VALUES (:full_name, :email, :password_hash)'
